@@ -3,7 +3,7 @@ def creacion_Laberinto(corredores):
         print("".join(str(cell)for cell in filas))
 
 laberinto = [
-    [0 ,1 ,1 ,0 ,0 ,0 ], #1  = camino 
+    [1 ,1 ,1 ,0 ,0 ,0 ], #1  = camino 
     [0 ,1 ,0 ,1 ,0 ,0 ],  #0  = pared 
     [0 ,1 ,1 ,1 ,1 ,0 ],
     [1 ,1 ,0 ,0 ,0 ,0 ],
