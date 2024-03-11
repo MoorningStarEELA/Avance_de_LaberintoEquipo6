@@ -57,7 +57,7 @@ def generateMaze(rows, columns):
 
 # Here is how your PixelArt is stored (using a "list of lists")
 
-palette = ["#FFFFFF", "#000000", "#00ff00", "#ff00ff", "#AAAAAA"]
+palette=["#5e5d5d","#000000","#cf2121","#42b9f5","#ffffff"]
 maze = generateMaze(15, 15)
 
 
