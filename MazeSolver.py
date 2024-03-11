@@ -34,6 +34,7 @@ def box(intDim):
 def generateMaze(rows, columns):
     horLimit = random.randint(2, rows-2)
     vertLimit = random.randint(2, columns-2)
+    
     maze = [[1 for _ in range(columns)] for _ in range(rows)]
     if maze[horLimit-1][vertLimit-1] == 1 and maze[horLimit-1][vertLimit-1] != horLimit and vertLimit:
         maze[horLimit-1][vertLimit] = 0
@@ -58,11 +59,11 @@ def generateMaze(rows, columns):
 # Here is how your PixelArt is stored (using a "list of lists")
 
 palette=["#5e5d5d","#000000","#cf2121","#42b9f5","#ffffff"]
-maze = generateMaze(15, 15)
+maze = generateMaze(int(input("Col: ")), int(input("Rows: ")))
 
 
 def drawMaze(maze):
-    boxSize = 15
+    boxSize = 5
     # Position myPen in top left area of the screen
     myPen.penup()
     myPen.goto(-130, 130)
