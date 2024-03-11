@@ -112,13 +112,14 @@ def exploreMaze(maze, row, col):
       3: "Cuando es el dia de la constitución (DD/MM)?",
       4: "Cuantas veces da la vuelta al sol la tierra en un año?",
       5: "Cuantos años hay en un lustro?",
-      6: "Si son las 5 pm que horas son en formato de 24hrs? (HH:MM)"
+      6: "Si son las 5 pm que horas son en formato de 24hrs? (HH:MM)",
+      
     }
     
     triviaAnswers = {
       1: "0.1",
       2: "70",
-      3: "5/2",
+      3: "05/02",
       4: "1",
       5: "5",
       6: "17:00"
@@ -132,7 +133,7 @@ def exploreMaze(maze, row, col):
   
     if maze[row][col] == 5:
       #Found trivia square
-      index = random.randint(1,5)
+      index = random.randint(1,len(triviaPool))
       print(triviaPool[index])
       ans = str(input())
       if ans == triviaAnswers[index]:
@@ -153,7 +154,10 @@ def exploreMaze(maze, row, col):
               # Explore path to the left
               if exploreMaze(maze, row, col - 1):
                   return True
-      
+      else:
+        text("Path Blocked!", -100, -150, 20)
+        myPen.getscreen().update()
+        return False
     if maze[row][col] == 6:
       pass
         
