@@ -32,12 +32,17 @@ def box(intDim):
 
 
 def generateMaze(rows, columns):
-    horLimit = random.randint(2, rows-2)
-    vertLimit = random.randint(2, columns-2)
+    #Range limit for random exit generation
+    horLimit = random.randint(2, rows - 2)
+    vertLimit = random.randint(2, columns - 2)
+
+    #for loop list comprehension for generating walls
     maze = [[1 for _ in range(columns)] for _ in range(rows)]
-    if maze[horLimit-1][vertLimit-1] == 1 and maze[horLimit-1][vertLimit-1] != horLimit and vertLimit:
-        maze[horLimit-1][vertLimit] = 0
-        maze[horLimit][vertLimit-1] = 0
+
+    #Ensuring the maze is always solvable by never letting walls surround the exit
+    if maze[horLimit - 1][vertLimit - 1] == 1 and maze[horLimit - 1][vertLimit - 1] != horLimit and vertLimit:
+        maze[horLimit - 1][vertLimit] = 0
+        maze[horLimit][vertLimit - 1] = 0
     maze[horLimit][vertLimit] = 2
 
     def creation(x, y):
@@ -56,13 +61,13 @@ def generateMaze(rows, columns):
 
 
 # Here is how your PixelArt is stored (using a "list of lists")
-
-palette = ["#FFFFFF", "#000000", "#00ff00", "#ff00ff", "#AAAAAA"]
-maze = generateMaze(15, 15)
+#          Uncharted | Charted  |   Exit  |  Tracer |    Walls  |
+palette = ["#5e5d5d", "#000000", "#cf2121", "#42b9f5", "#ffffff"]
+maze = generateMaze(20, 20)
 
 
 def drawMaze(maze):
-    boxSize = 15
+    boxSize = 10
     # Position myPen in top left area of the screen
     myPen.penup()
     myPen.goto(-130, 130)
@@ -88,6 +93,7 @@ def exploreMaze(maze, row, col):
     if maze[row][col] == 2:
         # We found the exit
         return True
+
     elif maze[row][col] == 0:  # Empty path, not explored
         maze[row][col] = 3
         myPen.clear()
