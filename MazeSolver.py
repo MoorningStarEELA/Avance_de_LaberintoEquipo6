@@ -32,19 +32,7 @@ def box(intDim):
 
 
 def generateMaze(rows, columns):
-    #Range limit for random exit generation
-    horLimit = random.randint(2, rows - 2)
-    vertLimit = random.randint(2, columns - 2)
-
-    #for loop list comprehension for generating walls
-    maze = [[1 for _ in range(columns)] for _ in range(rows)]
-
-    #Ensuring the maze is always solvable by never letting walls surround the exit
-    if maze[horLimit - 1][vertLimit - 1] == 1 and maze[horLimit - 1][vertLimit - 1] != horLimit and vertLimit:
-        maze[horLimit - 1][vertLimit] = 0
-        maze[horLimit][vertLimit - 1] = 0
-    maze[horLimit][vertLimit] = 2
-
+  
     def creation(x, y):
 
         directions = [(0, 2), (0, -2), (2, 0), (-2, 0)]
@@ -55,15 +43,43 @@ def generateMaze(rows, columns):
                 maze[y + dy // 2][x + dx // 2] = 0
                 maze[ny][nx] = 0
                 creation(nx, ny)
-
-    creation(random.randrange(0, columns, 2), random.randrange(0, rows, 2))
+                
+    #Limits for generating a valid exit
+    horLimit = random.randint(2, rows-2)
+    vertLimit = random.randint(2, columns-2)
+    
+    #Generate outer walls
+    maze = [[1]* columns for _ in range(rows)]
+    
+    #Ensuring maze is solvable by preventing walls surrounding the exit
+    if maze[horLimit-1][vertLimit-1] == 1 and maze[horLimit-1][vertLimit-1] != horLimit and vertLimit:
+        maze[horLimit-1][vertLimit] = 0
+        maze[horLimit][vertLimit-1] = 0
+    maze[horLimit][vertLimit] = 2
+    
+    #Generate inner walls
+    creation(random.randrange(0, columns-1, 2), random.randrange(0, rows-1, 2))
+    
+    #Ensuring trivia square exists
+    triviaRow = random.randint(0, rows - 1)
+    triviaCol = random.randint(0, columns - 1)
+    while maze[triviaRow][triviaCol] != 0:  # Asegurar que la casilla sea camino
+        triviaRow = random.randint(0, rows - 1)
+        triviaCol = random.randint(0, columns - 1)
+    maze[triviaRow][triviaCol] = 5
+    teleportRow = random.randint(0, rows - 1)
+    teleportCol = random.randint(0, columns - 1)
+    while maze[teleportRow][teleportCol] != 0:  # Asegurar que la casilla sea camino
+        teleportRow = random.randint(0, rows - 1)
+        teleportCol = random.randint(0, columns - 1)
+    maze[teleportRow][teleportCol] = 6 
     return maze
 
 
 # Here is how your PixelArt is stored (using a "list of lists")
-#          Uncharted | Charted  |   Exit  |  Tracer |    Walls  |
-palette = ["#5e5d5d", "#000000", "#cf2121", "#42b9f5", "#ffffff"]
-maze = generateMaze(20, 20)
+
+palette=["#5e5d5d","#000000","#cf2121","#42b9f5","#ffffff","#803896","#f73bd8"]
+maze = generateMaze(20,20)
 
 
 def drawMaze(maze):
@@ -90,10 +106,57 @@ def drawMaze(maze):
 
 # A backtracking/recursive function to check all possible paths until the exit is found
 def exploreMaze(maze, row, col):
+  #Trivia question and answers pool
+    triviaPool = {1: "Cuantos metros hay en un centimetro?",
+      2: "Cuanto porcentaje de agua hay en un cuerpo humano? (numero)",
+      3: "Cuando es el dia de la constitución (DD/MM)?",
+      4: "Cuantas veces da la vuelta al sol la tierra en un año?",
+      5: "Cuantos años hay en un lustro?",
+      6: "Si son las 5 pm que horas son en formato de 24hrs? (HH:MM)"
+    }
+    
+    triviaAnswers = {
+      1: "0.1",
+      2: "70",
+      3: "5/2",
+      4: "1",
+      5: "5",
+      6: "17:00"
+    }
+  
+  
     if maze[row][col] == 2:
         # We found the exit
         return True
-
+        
+  
+    if maze[row][col] == 5:
+      #Found trivia square
+      index = random.randint(1,5)
+      print(triviaPool[index])
+      ans = str(input())
+      if ans == triviaAnswers[index]:
+        maze[row][col] = 0
+        if row < len(maze) - 1:
+          # Explore path below
+          if exploreMaze(maze, row + 1, col):
+              return True
+          if row > 0:
+              # Explore path above
+              if exploreMaze(maze, row - 1, col):
+                  return True
+          if col < len(maze[row]) - 1:
+              # Explore path to the right
+              if exploreMaze(maze, row, col + 1):
+                  return True
+          if col > 0:
+              # Explore path to the left
+              if exploreMaze(maze, row, col - 1):
+                  return True
+      
+    if maze[row][col] == 6:
+      pass
+        
     elif maze[row][col] == 0:  # Empty path, not explored
         maze[row][col] = 3
         myPen.clear()
@@ -120,7 +183,6 @@ def exploreMaze(maze, row, col):
         myPen.clear()
         drawMaze(maze)
         myPen.getscreen().update()
-
         print("Backtrack")
 
 
