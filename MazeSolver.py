@@ -62,23 +62,21 @@ def generateMaze(rows, columns):
 
     creation(random.randrange(0, columns-1, 2), random.randrange(0, rows-1, 2))
 
-    # Place trivia squares
-    for _ in range(6):
+    # Place a single trivia square
+    triviaRow = random.randint(0, rows - 1)
+    triviaCol = random.randint(0, columns - 1)
+    while maze[triviaRow][triviaCol] != 0 or (triviaRow == horLimit and triviaCol == vertLimit):
         triviaRow = random.randint(0, rows - 1)
         triviaCol = random.randint(0, columns - 1)
-        while maze[triviaRow][triviaCol] != 0 or (triviaRow == horLimit and triviaCol == vertLimit):
-            triviaRow = random.randint(0, rows - 1)
-            triviaCol = random.randint(0, columns - 1)
-        maze[triviaRow][triviaCol] = 5
+    maze[triviaRow][triviaCol] = 5
 
-    # Place portals
-    for _ in range(6):
+    # Place a single portal
+    portalRow = random.randint(0, rows - 1)
+    portalCol = random.randint(0, columns - 1)
+    while maze[portalRow][portalCol] != 0 or (portalRow == horLimit and portalCol == vertLimit):
         portalRow = random.randint(0, rows - 1)
         portalCol = random.randint(0, columns - 1)
-        while maze[portalRow][portalCol] != 0 or (portalRow == horLimit and portalCol == vertLimit):
-            portalRow = random.randint(0, rows - 1)
-            portalCol = random.randint(0, columns - 1)
-        maze[portalRow][portalCol] = 6
+    maze[portalRow][portalCol] = 6
 
     return maze
 
@@ -106,16 +104,24 @@ def drawMaze(maze):
         myPen.pendown()
 
 def exploreMaze(maze, row, col):
-    triviaPool = {1: "Cuantos metros hay en un centimetro?",
-                  2: "Cuanto porcentaje de agua hay en un cuerpo humano? (numero)",
-                  3: "Cuando es el dia de la constitución (DD/MM)?",
-                  4: "Cuantas veces da la vuelta al sol la tierra en un año?",
-                  5: "Cuantos años hay en un lustro?",
-                  6: "Si son las 5 pm que horas son en formato de 24hrs? (HH:MM)",}
-
-    triviaAnswers = {1: "0.01", 2: "70", 3: "05/02", 4: "1", 5: "5", 6: "17:00"}
-
     global trivia_answer
+    triviaPool = {
+        1: "Cuantos metros hay en un centimetro?",
+        2: "Cuanto porcentaje de agua hay en un cuerpo humano? (numero)",
+        3: "Cuando es el dia de la constitución (DD/MM)?",
+        4: "Cuantas veces da la vuelta al sol la tierra en un año?",
+        5: "Cuantos años hay en un lustro?",
+        6: "Si son las 5 pm que horas son en formato de 24hrs? (HH:MM)",
+    }
+
+    triviaAnswers = {
+        1: "0.01",
+        2: "70",
+        3: "05/02",
+        4: "1",
+        5: "5",
+        6: "17:00"
+    }
 
     if maze[row][col] == 2:
         text("¡Llegaste! ¡Felicidades!", -100, -150, 20)
@@ -125,7 +131,6 @@ def exploreMaze(maze, row, col):
     if maze[row][col] == 5:
         index = random.randint(1,len(triviaPool))
         question_text.config(text=triviaPool[index])
-        global entry
         entry = tk.Entry(input_window)
         entry.pack()
         submit_button = tk.Button(input_window, text="Submit", command=lambda: submit_answer(lambda: validate_trivia_answer(maze, row, col, index, triviaAnswers[index])))
